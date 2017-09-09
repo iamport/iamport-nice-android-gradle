@@ -1,4 +1,4 @@
-package iamport.kr.iamportniceandroid;
+package kr.iamport;
 
 import org.junit.Test;
 

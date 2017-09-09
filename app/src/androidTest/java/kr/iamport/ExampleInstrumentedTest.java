@@ -1,4 +1,4 @@
-package iamport.kr.iamportniceandroid;
+package kr.iamport;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
