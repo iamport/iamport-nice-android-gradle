@@ -4,9 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -14,7 +13,7 @@ import android.webkit.WebView;
 import iamport.kr.iamportniceandroid.R;
 import kr.iamport.sdk.NiceWebViewClient;
 
-public class MainActivity extends AppCompatActivity {
+public class KcpMainActivity extends AppCompatActivity {
 
     private String TAG = "iamport";
     private WebView mainWebView;
@@ -33,7 +32,11 @@ public class MainActivity extends AppCompatActivity {
         WebSettings settings = mainWebView.getSettings();
         settings.setJavaScriptEnabled(true);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
@@ -63,18 +66,9 @@ public class MainActivity extends AppCompatActivity {
         String resVal = data.getExtras().getString("bankpay_value");
         String resCode = data.getExtras().getString("bankpay_code");
 
-        if("000".equals(resCode)){
-            niceClient.bankPayPostProcess(resCode, resVal);
-        }else if("091".equals(resCode)){//계좌이체 결제를 취소한 경우
-            Log.e(TAG, "계좌이체 결제를 취소하였습니다.");
-        }else if("060".equals(resCode)){
-            Log.e(TAG, "타임아웃");
-        }else if("050".equals(resCode)){
-            Log.e(TAG, "전자서명 실패");
-        }else if("040".equals(resCode)){
-            Log.e(TAG, "OTP/보안카드 처리 실패");
-        }else if("030".equals(resCode)){
-            Log.e(TAG, "인증모듈 초기화 오류");
+        //KCP 실시간 계좌이체 후 처리
+        if ( "000".equals(resCode) ) {
+            mainWebView.loadUrl("javascript:KCP_App_script('"+resCode+"','AutoCheck')" );
         }
     }
 
